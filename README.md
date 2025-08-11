@@ -201,8 +201,8 @@ seleccion y comparacion de modelos (Seleccion_modelo), validación del modelo se
 
 ## Próximos Pasos
 
-- [ ] Validar datos de lluvía por país y Yield en países outliers
-- [ ] Container para el proyecto 
-- [ ] Exploración de features de cambio vs históricos más complejos 
-- [ ] Otro tipo de modelos (Gradient Boosting, Redes Neuronales)
-- [ ] Integrar más fuentes de datos climáticos, condiciones de suelos, etc...
+- Validar datos de lluvía por país y Yield en países outliers
+- Container para el proyecto 
+- Exploración de features de cambio vs históricos más complejos 
+- Otro tipo de modelos (Gradient Boosting, Redes Neuronales)
+- Integrar más fuentes de datos climáticos, condiciones de suelos, etc...
