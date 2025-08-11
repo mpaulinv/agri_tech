@@ -53,7 +53,7 @@ proyecto-agritech/
 
 1. **Clonar el repositorio**
 ```bash
-git clone <url-del-repositorio>
+git clone [<url-del-repositorio>](https://github.com/mpaulinv/agri_tech/tree)
 cd proyecto-agritech
 ```
 
