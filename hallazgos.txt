@@ -1,0 +1,51 @@
+#### Resumen de hallazgos del proyecto. 
+
+Calidad y estructura de los datos
+
+El dataset descargado desde Kaggle no presenta valores faltantes en las variables principales, pero sí existen años sin datos para ciertos países. Estos faltantes no son aleatorios, sino estructurales (por país y año).
+No se encontraron duplicados en el dataset, lo que facilita el análisis y modelado.
+Algunas variables continuas (yield, lluvia, pesticidas, temperatura) presentan distribuciones sesgadas a la derecha y valores extremos (outliers), especialmente en la variable de rendimiento (yield). Además de esto se encontro que variables como la lluvia no tienen variación por año para un país dado.
+En ese sentido y para una mejora al proyecto me gustaría: 
+	1) Validar los datos de lluvia o buscar fuentes adicionales de información ya que esta variable debe estar muy ligada al rendimiento 
+	2) Validar datos de rendimiento para ciertos países y años que parecen outliers (Qatar, Tajikistan y Netherlands) 
+	3) Detecté que, en algunos casos, existen varios registros por país/año. En estos casos la única variable que cambia es la temperatura. Sin embargo, esto puede indicar 
+	   defectos en la data que deberían ser validados. 
+
+Tratamiento de variables y feature engineering
+
+Para países con varios registros por año, se utiliza la mediana de la temperatura promedio para hacer la medida más robusta frente a outliers.
+Se aplicaron transformaciones BoxCox y polinomios a las variables continuas para mejorar la normalidad y la capacidad predictiva del modelo.
+Se generaron interacciones entre variables transformadas y cambios respecto al histórico (cambio porcentual y logarítmico respecto a promedios históricos).
+Se realizó one-hot encoding para la variable Area (país), permitiendo que el modelo capture diferencias regionales.
+
+Modelado y validación
+Se entrenaron varios modelos: regresión lineal, modelos de efectos fijos y aleatorios, y Random Forest. El Random Forest con one-hot coding de área presentó mejores resultados en todas las métricas de validación (RMSE, MAE, R2) y folds. Sin embargo, el modelo de efectos fijos fue competitivo y podría emplearse si la explicabilidad de las predicciones individuales es importante. 
+Se implementó validación cruzada temporal para evaluar el desempeño de los modelos y evitar sobreajuste, respetando la estructura temporal y considerando que el uso del modelo implicará que se requerirá predecir data en años futuros. La métrica empleada para el tuneo fue el MAE ya que como se encontró en el EDA, la variable de Yield tiene algunos outliers que podrían impactar los errores, especialmente en RMSE o R2. 
+El modelo final seleccionado fue un Random Forest con hiperparámetros ajustados y variables de área (dummies), mostrando los siguientes resultados: 
+ 
+Métricas globales en test (2009-2013):
+Random Forest - RMSE: 16801.74, MAE: 10730.61, R2: 0.760
+
+Año 2009:
+  Random Forest (Area dummies, tuned) - RMSE: 13828.26, MAE: 8676.10, R2: 0.846
+
+Año 2010:
+  Random Forest (Area dummies, tuned) - RMSE: 18364.82, MAE: 10916.18, R2: 0.734
+
+Año 2011:
+  Random Forest (Area dummies, tuned) - RMSE: 17087.66, MAE: 11581.50, R2: 0.760
+
+Año 2012:
+  Random Forest (Area dummies, tuned) - RMSE: 16438.93, MAE: 10744.16, R2: 0.753
+
+Año 2013:
+  Random Forest (Area dummies, tuned) - RMSE: 17874.58, MAE: 11701.70, R2: 0.703
+
+
+El modelo tiene un mejor desempeño en los años cercanos a la data de entrenamiento y empieza a perder capacidad predictiva después de tres o cuatro años. Un ejercicio adicional para futuro sería dar mayor peso a observaciones más recientes durante la selección y tuneo del modelo. 
+
+Las variables mas importantes del modelo son la interaccion entre lluvia y pesticidas, lluvia y temperatura así como temperatura y pesticidas. Además la temperatura junto con su cuadrado y cubo. 
+
+Los experimentos se trackean mediante MLflow. 
+
+
