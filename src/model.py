@@ -17,11 +17,11 @@ from itertools import product
 import random
 import shap
 import joblib
+from config import FEATURED_DATA_PATH, MODEL_PATH, N_ESTIMATORS, MAX_DEPTH, MIN_SAMPLES_SPLIT, MIN_SAMPLES_LEAF, MAX_FEATURES, RANDOM_STATE
 
-os.makedirs('model', exist_ok=True)
+os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
 
-
-historicos = pd.read_csv("data/feature_engineered_data.csv")
+historicos = pd.read_csv(FEATURED_DATA_PATH)
 print(historicos.head())
 print(historicos.info)
 print(historicos.columns)
@@ -41,12 +41,27 @@ features_subset = ['rain_fall_mean_boxcox',
 area_dummy_cols = [col for col in historicos.columns if col.startswith('Area_')]
 features_rf_area = features_subset + area_dummy_cols
 
+# Guardamos las features utilizadas a un archivo de texto para la API
+with open("model/features_rf_area.txt", "w") as f:
+    for col in features_rf_area:
+        f.write(f"{col}\n")
+
+
 # Random Forest final con hiperparámetros del tunning 
 X_train_rf = historicos[features_rf_area]
 y_train_rf = historicos['yield_mean']
-rf_final = RandomForestRegressor(n_estimators=550, max_depth=None, min_samples_split=2,
-                                 min_samples_leaf=1, max_features=2, random_state=42, n_jobs=-1)
+
+rf_final = RandomForestRegressor(
+    n_estimators=N_ESTIMATORS,
+    max_depth=MAX_DEPTH,
+    min_samples_split=MIN_SAMPLES_SPLIT,
+    min_samples_leaf=MIN_SAMPLES_LEAF,
+    max_features=MAX_FEATURES,
+    random_state=RANDOM_STATE,
+    n_jobs=-1
+)
 rf_final.fit(X_train_rf, y_train_rf)
 
+
 # Guardar el modelo entrenado
-joblib.dump(rf_final, "model/model_rf_final.joblib")
+joblib.dump(rf_final, MODEL_PATH)
