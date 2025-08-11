@@ -79,14 +79,16 @@ pip install -r requirements.txt
 
 ```bash
 # 1. Procesar datos raw
-python data_pipeline.py
+python src/data_pipeline.py
 
 # 2. Generar features
-python pipeline_feature_engineering.py
+python src/pipeline_feature_engineering.py
 
 # 3. Entrenar modelo final
-python model.py
+python src/model.py
 ```
+$ 4. Opcional. Ejecutar tests 
+pytest tests/
 
 ### 2. Iniciar API
 
